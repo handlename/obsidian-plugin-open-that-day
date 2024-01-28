@@ -8,20 +8,22 @@ export class Parser {
 		this.locale = locale;
 	}
 
-	parse(text: string): chrono.ParsedResult[] {
-		switch (this.locale) {
-			case "ja":
-				return chrono.ja.parse(text);
-			case "en":
-			default:
-				return chrono.en.parse(text);
-		}
-	}
+	parse(text: string): dayjs.Dayjs | undefined {
+		const results = ((t) => {
+			switch (this.locale) {
+				case "ja":
+					return chrono.ja.parse(t);
+				case "en":
+				default:
+					return chrono.en.parse(t);
+			}
+		})(text);
 
-	parseAsDate(text: string): dayjs.Dayjs {
-		// TODO: call parse then ...
-		const parsed = this.parse(text);
-		console.log(parsed);
-		return dayjs();
+		if (results.length === 0) {
+			console.error(`failed to parse text "${text}" as date`);
+			return undefined;
+		}
+
+		return dayjs(results[0].date());
 	}
 }
