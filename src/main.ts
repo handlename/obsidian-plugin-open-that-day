@@ -1,8 +1,10 @@
 import {
 	App,
 	Plugin,
-	Modal,
+	SuggestModal,
+	Setting,
 } from 'obsidian';
+import { Parser } from './parser';
 
 const PLUGIN_PREFIX = "open-that-day-";
 
@@ -22,18 +24,32 @@ export default class OpenThatDayPlugin extends Plugin {
 	}
 };
 
-class ThatDayModal extends Modal {
+class ThatDayModal extends SuggestModal<string> {
+	parser: Parser;
+	text: string;
+
 	constructor(app: App) {
 		super(app);
+		this.parser = new Parser();
 	}
 
-	onOpen() {
-		const { contentEl } = this;
-		contentEl.setText('Open That Day');
+	getSuggestions(query: string): string[] {
+		const day = this.parser.parse(query);
+
+		if (day === undefined) {
+			return [];
+		}
+
+		return [
+			day.format("YYYY-MM-DD"),
+		]
 	}
 
-	onClose() {
-		const { contentEl } = this;
-		contentEl.empty();
+	renderSuggestion(date: string, el: HTMLElement) {
+		el.createEl("div", { text: date });
+	}
+
+	onChooseSuggestion(text: string, event: MouseEvent | KeyboardEvent) {
+		console.log(`choosed "${text}"`);
 	}
 };

@@ -29,7 +29,7 @@ export class Parser {
 		const results = parser(text);
 
 		if (results.length === 0) {
-			console.error(`failed to parse text "${text}" as date`);
+			console.debug(`failed to parse text "${text}" as date`);
 			return undefined;
 		}
 
