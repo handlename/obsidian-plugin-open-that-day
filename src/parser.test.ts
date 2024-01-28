@@ -1,4 +1,4 @@
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 import { Parser } from "./parser";
 
 describe('parse', () => {

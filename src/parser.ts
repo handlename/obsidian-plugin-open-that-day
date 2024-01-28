@@ -1,5 +1,5 @@
 import * as chrono from "chrono-node";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 
 interface ParserFn {
 	(text: string, ref?: chrono.ParsingReference | Date, option?: chrono.ParsingOption): chrono.ParsedResult[];
