@@ -4,6 +4,14 @@ import {
 	SuggestModal,
 	Setting,
 } from 'obsidian';
+
+import {
+	createDailyNote,
+	getDailyNote,
+	getDailyNoteSettings,
+} from 'obsidian-daily-notes-interface';
+
+import moment from 'moment';
 import { Parser } from './parser';
 
 const PLUGIN_PREFIX = "open-that-day-";
@@ -49,7 +57,28 @@ class ThatDayModal extends SuggestModal<string> {
 		el.createEl("div", { text: date });
 	}
 
-	onChooseSuggestion(text: string, event: MouseEvent | KeyboardEvent) {
-		console.log(`choosed "${text}"`);
+	async onChooseSuggestion(text: string, event: MouseEvent | KeyboardEvent) {
+		console.debug(`choosed "${text}"`);
+
+		const settings = getDailyNoteSettings()
+		console.debug(settings);
+
+		const day = moment(text);
+
+		let file = this.app.metadataCache.getFirstLinkpathDest(day.format(settings.format), settings.folder || "")
+		if (file === null) {
+			console.debug("create daily note");
+			file = await createDailyNote(day);
+		}
+
+		if (file === null) {
+			console.debug("failed to open or create daily note");
+			return;
+		}
+
+		console.debug(`file to open: ${file}`);
+
+		const leaf = this.app.workspace.getLeaf();
+		leaf.openFile(file);
 	}
 };
