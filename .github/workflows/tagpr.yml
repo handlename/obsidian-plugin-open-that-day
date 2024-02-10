@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  release:
+  tagpr:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GH_PAT }}
