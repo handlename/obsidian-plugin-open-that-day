@@ -2,6 +2,8 @@
 
 Open daily note by natural language.
 
+![](/doc/demo.gif)
+
 ## Synopsis
 
 1. Run command `Open That Day: Open`
