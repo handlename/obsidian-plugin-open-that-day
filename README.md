@@ -4,7 +4,7 @@ Open daily note by natural language.
 
 ![](/doc/demo.gif)
 
-## Synopsis
+## How to use
 
 1. Run command `Open That Day: Open`
 2. Input day expression like "tomorrow" / "next mon" to suggest dialogue
@@ -13,6 +13,13 @@ Open daily note by natural language.
 ## Installation
 
 Please use [BRAT](https://github.com/TfTHacker/obsidian42-brat?tab=readme-ov-file)
+
+In Obsidian app, run command `BRAT: Plugins: Add a plugin with frozen version based on a release tag`, then input:
+
+- Repository: `handlename/obsidian-plugin-open-that-day`
+- Version: `v0.1.1`
+
+and click `Add Plugin` button.
 
 ## License
 
