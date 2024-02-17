@@ -38,19 +38,12 @@ class ThatDayModal extends SuggestModal<string> {
 
 	constructor(app: App) {
 		super(app);
-		this.parser = new Parser();
+		this.parser = new Parser(["en", "ja"]);
 	}
 
 	getSuggestions(query: string): string[] {
-		const day = this.parser.parse(query);
-
-		if (day === undefined) {
-			return [];
-		}
-
-		return [
-			day.format("YYYY-MM-DD"),
-		]
+		const days = this.parser.parse(query);
+		return days.map((day) => day.format("YYYY-MM-DD"));
 	}
 
 	renderSuggestion(date: string, el: HTMLElement) {

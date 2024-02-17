@@ -1,5 +1,5 @@
 import * as chrono from "chrono-node";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 type Result<T, E extends Error> = Success<T> | Failure<E>
 
@@ -39,34 +39,58 @@ interface ParserFn {
 	(text: string, ref?: chrono.ParsingReference | Date, option?: chrono.ParsingOption): chrono.ParsedResult[];
 }
 
+class LocaledParser {
+	constructor(
+		readonly locale: string,
+		readonly parse: ParserFn,
+	) { }
+}
+
 export class Parser {
-	locale: string;
+	localedParsers: LocaledParser[];
 
-	constructor(locale = window.moment.locale()) {
-		this.locale = locale;
+	constructor(locales = [window.moment.locale()]) {
+		this.localedParsers = [];
+
+		locales.forEach((loc) => {
+			const result = this.localedParser(loc);
+
+			if (result.isSuccess()) {
+				this.localedParsers.push(new LocaledParser(loc, result.value));
+			} else {
+				console.warn(`failed to select parser: ${result.error}`);
+			}
+		});
 	}
 
-	localedParser(): ParserFn {
-		switch (this.locale) {
+	localedParser(loc: string): Result<ParserFn, Error> {
+		switch (loc) {
 			case "ja":
-				return chrono.ja.parse;
+				return new Success<ParserFn>(chrono.ja.parse);
 			case "en":
-				return chrono.en.parse;
+				return new Success<ParserFn>(chrono.en.parse);
 			default:
-				console.info(`unknown locale "${this.locale}". fallback to "en"`);
-				return chrono.en.parse;
+				return new Failure<Error>(new Error(`unknown locale "${loc}"`))
 		}
 	}
 
-	parse(text: string): dayjs.Dayjs | undefined {
-		const parser = this.localedParser();
-		const results = parser(text);
+	parse(text: string): dayjs.Dayjs[] {
+		const dates: Dayjs[] = [];
 
-		if (results.length === 0) {
-			console.debug(`failed to parse text "${text}" as date`);
-			return undefined;
-		}
+		this.localedParsers.forEach((parser) => {
+			const results = parser.parse(text);
 
-		return dayjs(results[0].date());
+			if (results.length === 0) {
+				console.debug(`failed to parse text '${text}' for locale '${parser.locale}'`)
+				return;
+			}
+
+			results.forEach((result) => {
+				const at = dayjs(result.date());
+				dates.push(dayjs(at.format("YYYY-MM-DD")));
+			});
+		});
+
+		return dates;
 	}
 }
