@@ -18,8 +18,16 @@ import { Parser } from './parser';
 const PLUGIN_PREFIX = "open-that-day-";
 
 const LOCATIONS = [
+	"de",
 	"en",
+	"es",
+	"fr",
 	"ja",
+	"nl",
+	"pt",
+	"ru",
+	"uk",
+	"zh",
 ];
 
 interface ThatDaySettings {
