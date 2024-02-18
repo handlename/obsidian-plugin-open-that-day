@@ -3,6 +3,7 @@ import {
 	Plugin,
 	SuggestModal,
 	Setting,
+	PluginSettingTab,
 } from 'obsidian';
 
 import {
@@ -16,7 +17,17 @@ import { Parser } from './parser';
 
 const PLUGIN_PREFIX = "open-that-day-";
 
+const LOCATIONS = [
+	"en",
+	"ja",
+];
+
+interface ThatDaySettings {
+};
+
 export default class OpenThatDayPlugin extends Plugin {
+	settings: ThatDaySettings;
+
 	async onload() {
 		this.addCommand({
 			id: OpenThatDayPlugin.prefixed("open"),
@@ -25,10 +36,20 @@ export default class OpenThatDayPlugin extends Plugin {
 				new ThatDayModal(this.app).open();
 			}
 		})
+
+		this.addSettingTab(new ThatDaySettingTab(this.app, this));
 	}
 
 	static prefixed(text: string): string {
 		return `${PLUGIN_PREFIX}${text}`;
+	}
+
+	async loadSettings() {
+		this.settings = {}; // TODO:
+	}
+
+	async saveSettings() {
+		await this.saveData(this.settings);
 	}
 };
 
@@ -73,5 +94,35 @@ class ThatDayModal extends SuggestModal<string> {
 
 		const leaf = this.app.workspace.getLeaf();
 		leaf.openFile(file);
+	}
+};
+
+class ThatDaySettingTab extends PluginSettingTab {
+	plugin: OpenThatDayPlugin;
+
+	constructor(app: App, plugin: OpenThatDayPlugin) {
+		super(app, plugin);
+		this.plugin = plugin;
+	}
+
+	display(): void {
+		const { containerEl } = this;
+
+		new Setting(containerEl)
+			.setName('Locations')
+			.setDesc('Toggle located parsers');
+
+		LOCATIONS.forEach((loc) => {
+			new Setting(containerEl)
+				.setName(loc)
+				.addToggle((tc) => {
+					tc.setValue(
+						true // TODO: return value from settings
+					).onChange(async (value) => {
+						// TODO: set to settings
+						await this.plugin.saveSettings();
+					});
+				});
+		});
 	}
 };
