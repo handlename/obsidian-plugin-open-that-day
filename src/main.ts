@@ -109,8 +109,8 @@ class ThatDaySettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 
 		new Setting(containerEl)
-			.setName('Locations')
-			.setDesc('Toggle located parsers');
+			.setName('Locales')
+			.setDesc('Toggle localed parsers');
 
 		LOCATIONS.forEach((loc) => {
 			new Setting(containerEl)
