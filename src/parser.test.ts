@@ -50,7 +50,7 @@ describe('parse', () => {
 			text: "Tomorrow",
 			days: [today.add(1, "d")]
 		},
-	])("in locales %p, parse '%s'", ({ locales, text, days }) => {
+	])("in locales %p, success parse '%s'", ({ locales, text, days }) => {
 		const parser = new Parser(locales);
 		const results = parser.parse(text);
 
