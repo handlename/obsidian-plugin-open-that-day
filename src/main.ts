@@ -31,17 +31,24 @@ const LOCALES = [
 ];
 
 interface ThatDaySettings {
+	locales: string[];
+};
+
+const DEFAULT_SETTIGNS: Partial<ThatDaySettings> = {
+	locales: ["en"],
 };
 
 export default class OpenThatDayPlugin extends Plugin {
 	settings: ThatDaySettings;
 
 	async onload() {
+		await this.loadSettings();
+
 		this.addCommand({
 			id: OpenThatDayPlugin.prefixed("open"),
 			name: "Open",
 			callback: () => {
-				new ThatDayModal(this.app).open();
+				new ThatDayModal(this.app, this).open();
 			}
 		})
 
@@ -53,10 +60,11 @@ export default class OpenThatDayPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = {}; // TODO:
+		this.settings = Object.assign({}, DEFAULT_SETTIGNS, await this.loadData());
 	}
 
 	async saveSettings() {
+		console.debug(this.settings);
 		await this.saveData(this.settings);
 	}
 };
@@ -64,9 +72,9 @@ export default class OpenThatDayPlugin extends Plugin {
 class ThatDayModal extends SuggestModal<string> {
 	readonly parser: Parser;
 
-	constructor(app: App) {
+	constructor(app: App, plugin: OpenThatDayPlugin) {
 		super(app);
-		this.parser = new Parser(["en", "ja"]);
+		this.parser = new Parser(plugin.settings.locales);
 	}
 
 	getSuggestions(query: string): string[] {
@@ -106,10 +114,16 @@ class ThatDayModal extends SuggestModal<string> {
 
 class ThatDaySettingTab extends PluginSettingTab {
 	readonly plugin: OpenThatDayPlugin;
+	readonly localeClassName = "locale";
+	enabledLocales = new Map<string, boolean>;
 
 	constructor(app: App, plugin: OpenThatDayPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
+
+		LOCALES.forEach((loc) => {
+			this.enabledLocales.set(loc, plugin.settings.locales.includes(loc));
+		});
 	}
 
 	display(): void {
@@ -124,11 +138,13 @@ class ThatDaySettingTab extends PluginSettingTab {
 		LOCALES.forEach((loc) => {
 			new Setting(containerEl)
 				.setName(loc)
+				.setClass(this.localeClassName)
 				.addToggle((tc) => {
 					tc.setValue(
-						true // TODO: return value from settings
+						!!this.enabledLocales.get(loc)
 					).onChange(async (value) => {
-						// TODO: set to settings
+						this.enabledLocales.set(loc, value);
+						this.plugin.settings.locales = LOCALES.filter((loc) => !!this.enabledLocales.get(loc));
 						await this.plugin.saveSettings();
 					});
 				});
