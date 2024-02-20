@@ -17,7 +17,7 @@ import { Parser } from './parser';
 
 const PLUGIN_PREFIX = "open-that-day-";
 
-const LOCATIONS = [
+const LOCALES = [
 	"de",
 	"en",
 	"es",
@@ -119,7 +119,7 @@ class ThatDaySettingTab extends PluginSettingTab {
 			.setName('Locales')
 			.setDesc('Toggle localed parsers');
 
-		LOCATIONS.forEach((loc) => {
+		LOCALES.forEach((loc) => {
 			new Setting(containerEl)
 				.setName(loc)
 				.addToggle((tc) => {
