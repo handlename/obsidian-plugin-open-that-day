@@ -115,6 +115,8 @@ class ThatDaySettingTab extends PluginSettingTab {
 	display(): void {
 		const { containerEl } = this;
 
+		containerEl.empty();
+
 		new Setting(containerEl)
 			.setName('Locales')
 			.setDesc('Toggle localed parsers');
