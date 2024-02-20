@@ -47,7 +47,7 @@ class LocaledParser {
 }
 
 export class Parser {
-	localedParsers: LocaledParser[];
+	readonly localedParsers: LocaledParser[];
 
 	constructor(locales = [window.moment.locale()]) {
 		this.localedParsers = [];

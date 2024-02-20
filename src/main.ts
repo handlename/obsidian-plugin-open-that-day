@@ -62,7 +62,7 @@ export default class OpenThatDayPlugin extends Plugin {
 };
 
 class ThatDayModal extends SuggestModal<string> {
-	parser: Parser;
+	readonly parser: Parser;
 
 	constructor(app: App) {
 		super(app);
@@ -105,7 +105,7 @@ class ThatDayModal extends SuggestModal<string> {
 };
 
 class ThatDaySettingTab extends PluginSettingTab {
-	plugin: OpenThatDayPlugin;
+	readonly plugin: OpenThatDayPlugin;
 
 	constructor(app: App, plugin: OpenThatDayPlugin) {
 		super(app, plugin);
