@@ -63,7 +63,6 @@ export default class OpenThatDayPlugin extends Plugin {
 
 class ThatDayModal extends SuggestModal<string> {
 	parser: Parser;
-	text: string;
 
 	constructor(app: App) {
 		super(app);
