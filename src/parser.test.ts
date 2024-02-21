@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { Parser } from "./parser";
 
 describe('parse', () => {
@@ -11,19 +11,57 @@ describe('parse', () => {
 		jest.restoreAllMocks();
 	});
 
-	test("en", () => {
-		const now = dayjs();
+	const now = dayjs();
+	const today = dayjs(now.format("YYYY-MM-DD"));
 
-		const parser = new Parser("en");
-		expect(parser.parse("Today")?.format()).toBe(now.format());
-		expect(parser.parse("3 weeks later")?.format()).toBe(now.add(3, "w").format());
+	test("invalid locale", () => {
+		const parser = new Parser(["foo"]);
+		expect(parser.localedParsers.length).toBe(0);
 	});
 
-	test("ja", () => {
-		const now = dayjs();
+	describe.each([
+		{
+			locales: ["en"],
+			text: "Today",
+			days: [today]
+		},
+		{
+			locales: ["en"],
+			text: "3 weeks later",
+			days: [today.add(3, "w")]
+		},
+		{
+			locales: ["ja"],
+			text: "昨日",
+			days: [today.subtract(1, "d")]
+		},
+		{
+			locales: ["ja"],
+			text: "明日",
+			days: [today.add(1, "d")]
+		},
+		{
+			locales: ["en", "ja"],
+			text: "昨日",
+			days: [today.subtract(1, "d")]
+		},
+		{
+			locales: ["en", "ja"],
+			text: "Tomorrow",
+			days: [today.add(1, "d")]
+		},
+	])("in locales %p, success parse '%s'", ({ locales, text, days }) => {
+		const parser = new Parser(locales);
+		const results = parser.parse(text);
 
-		const parser = new Parser("ja");
-		expect(parser.parse("昨日")?.format()).toBe(now.subtract(1, "d").format());
-		expect(parser.parse("明日")?.format()).toBe(now.add(1, "d").format());
+		it(`should returns ${days.length} result(s)`, () => {
+			expect(results.length).toBe(1);
+		});
+
+		it.each(
+			results.map((r, i) => [r, days[i]])
+		)('result %s should be %s', (result: Dayjs, expected: Dayjs) => {
+			expect(result.format()).toBe(expected.format());
+		});
 	});
 });
