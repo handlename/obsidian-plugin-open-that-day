@@ -28,7 +28,7 @@ const LOCALES = [
 	"ru",
 	"uk",
 	"zh",
-];
+] as const;
 
 interface ThatDaySettings {
 	locales: string[];
