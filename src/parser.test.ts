@@ -1,4 +1,6 @@
 import dayjs, { Dayjs } from "dayjs";
+import { Success } from "./result";
+import { ParserFactory } from "./parser_factory";
 import { Parser } from "./parser";
 
 describe('parse', () => {
@@ -14,9 +16,10 @@ describe('parse', () => {
 	const now = dayjs();
 	const today = dayjs(now.format("YYYY-MM-DD"));
 
-	test("invalid locale", () => {
-		const parser = new Parser(["foo"]);
-		expect(parser.localedParsers.length).toBe(0);
+	it("is invalid locale", () => {
+		const result = ParserFactory.build(false, ["foo"]);
+		expect(result.isFailure()).toBeTruthy();
+		result.isFailure() && expect(result.error.message).toMatch(/unknown locale/);
 	});
 
 	describe.each([
@@ -51,7 +54,14 @@ describe('parse', () => {
 			days: [today.add(1, "d")]
 		},
 	])("in locales %p, success parse '%s'", ({ locales, text, days }) => {
-		const parser = new Parser(locales);
+		const buildResult = ParserFactory.build(false, locales);
+
+		if (buildResult.isFailure()) {
+			console.error(buildResult.error);
+		}
+		expect(buildResult.isSuccess()).toBeTruthy();
+
+		const parser = (buildResult as Success<Parser>).value;
 		const results = parser.parse(text);
 
 		it(`should returns ${days.length} result(s)`, () => {

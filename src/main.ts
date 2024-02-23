@@ -7,13 +7,12 @@ import {
 } from 'obsidian';
 
 import {
-	createDailyNote,
-	getDailyNote,
-	getDailyNoteSettings,
+	createDailyNote, getDailyNoteSettings
 } from 'obsidian-daily-notes-interface';
 
 import moment from 'moment';
 import { Parser } from './parser';
+import { ParserFactory } from './parser_factory';
 
 const PLUGIN_PREFIX = "open-that-day-";
 
@@ -74,7 +73,13 @@ class ThatDayModal extends SuggestModal<string> {
 
 	constructor(app: App, plugin: OpenThatDayPlugin) {
 		super(app);
-		this.parser = new Parser(plugin.settings.locales);
+
+		const result = ParserFactory.build(false, plugin.settings.locales);
+		if (result.isFailure()) {
+			throw new Error("failed to build Parser");
+		}
+
+		this.parser = result.value;
 	}
 
 	getSuggestions(query: string): string[] {
