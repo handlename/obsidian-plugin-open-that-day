@@ -32,10 +32,26 @@ export class Parser {
 
 	localedParser(loc: string): Result<ParserFn, Error> {
 		switch (loc) {
-			case "ja":
-				return new Success<ParserFn>(chrono.ja.parse);
+			case "de":
+				return new Success<ParserFn>(chrono.de.parse);
 			case "en":
 				return new Success<ParserFn>(chrono.en.parse);
+			case "es":
+				return new Success<ParserFn>(chrono.es.parse);
+			case "fr":
+				return new Success<ParserFn>(chrono.fr.parse);
+			case "ja":
+				return new Success<ParserFn>(chrono.ja.parse);
+			case "nl":
+				return new Success<ParserFn>(chrono.nl.parse);
+			case "pt":
+				return new Success<ParserFn>(chrono.pt.parse);
+			case "ru":
+				return new Success<ParserFn>(chrono.ru.parse);
+			case "uk":
+				return new Success<ParserFn>(chrono.uk.parse);
+			case "zh":
+				return new Success<ParserFn>(chrono.zh.parse);
 			default:
 				return new Failure<Error>(new Error(`unknown locale "${loc}"`))
 		}
