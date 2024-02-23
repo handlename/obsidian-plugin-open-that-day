@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.2.1](https://github.com/handlename/obsidian-plugin-open-that-day/compare/v0.2.0...v0.2.1) - 2024-02-23
+- Parsers for more locales are not implemented by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/5
+
 ## [v0.2.0](https://github.com/handlename/obsidian-plugin-open-that-day/compare/v0.1.1...v0.2.0) - 2024-02-21
 - Setting Locales by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/3
 
