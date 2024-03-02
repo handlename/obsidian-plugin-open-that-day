@@ -152,15 +152,35 @@ class ThatDaySettingTab extends PluginSettingTab {
 			.setDesc("Toggle basic parsers");
 
 		[
-			"shorthand",
+			{
+				name: "shorthand",
+				desc: (() => {
+					const d = document.createDocumentFragment();
+					d.append(
+						createSpan({ text: "specify that day by shorthand expression." }), createEl("br"),
+						createEl("br"),
+						createSpan({ text: "format: [direction][unit][number]" }), createEl("br"),
+						createSpan({ text: "directon := n (next) | p (previous), default=n" }), createEl("br"),
+						createSpan({ text: "unit := d(day) | w(week) | m(month), default=d" }), createEl("br"),
+						createSpan({ text: "number := any fixed number, default=1" }), createEl("br"),
+						createEl("br"),
+						createSpan({ text: "example:" }), createEl("br"),
+						createSpan({ text: "n → next day" }), createEl("br"),
+						createSpan({ text: "pw3 → 3 weeks ago" }), createEl("br"),
+						createSpan({ text: "nm2 → 2 months later" }),
+					);
+					return d;
+				})(),
+			}
 		].forEach((type) => {
 			new Setting(containerEl)
-				.setName(type)
+				.setName(type.name)
+				.setDesc(type.desc)
 				.addToggle((tc) => {
 					tc.setValue(
-						!!this.enabledBasics.get(type)
+						!!this.enabledBasics.get(type.name)
 					).onChange(async (value) => {
-						this.enabledBasics.set(type, value);
+						this.enabledBasics.set(type.name, value);
 						this.plugin.settings.basics = BASICS.filter((type) => !!this.enabledBasics.get(type));
 						await this.plugin.saveSettings();
 					});
