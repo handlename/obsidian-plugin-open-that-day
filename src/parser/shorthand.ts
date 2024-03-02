@@ -2,18 +2,11 @@ import dayjs, { Dayjs } from "dayjs";
 import { Parser } from "../parser";
 
 const Directions = [-1, 1] as const;
-
 type Direction = (typeof Directions)[number];
 
 export class ShorthandParser extends Parser {
 	private static patternToday = new RegExp('^t$');
 	private static patternRelative = new RegExp('^(?<num>[0-9]+)?(?<unit>[dwm])?(?<direction>[ablnp])?$');
-
-	private static manipulateTypeMap: { [key: string]: string } = {
-		d: 'd',
-		w: 'w',
-		m: 'M',
-	} as const;
 
 	parse(text: string): Dayjs[] {
 		const funcs = [
@@ -54,7 +47,7 @@ export class ShorthandParser extends Parser {
 
 		const now = dayjs();
 		const directions = ShorthandParser.determineDirection(parseResult.direction);
-		const unit = (ShorthandParser.manipulateTypeMap[parseResult.unit] || 'd') as dayjs.ManipulateType;
+		const unit = ShorthandParser.determineUnit(parseResult.unit);
 
 		return directions.map((d) => {
 			return now.add(parseResult.num * d, unit)
@@ -74,5 +67,15 @@ export class ShorthandParser extends Parser {
 		}
 
 		return [];
+	}
+
+	static determineUnit(ch: string): dayjs.ManipulateType {
+		switch (ch) {
+			case "d": return "d";
+			case "w": return "w";
+			case "m": return "M";
+		}
+
+		return "d";
 	}
 }
