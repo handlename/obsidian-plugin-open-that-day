@@ -5,11 +5,14 @@ import { LocaledParser } from "./parser/localed";
 import { MultipleParser } from "./parser/multiple";
 
 export class ParserFactory {
-	static build(includeCustom: boolean, locales: string[]): Result<Parser, Error> {
+	static build(basics: string[], locales: string[]): Result<Parser, Error> {
 		const parsers: Parser[] = [];
 
-		if (includeCustom) {
-			parsers.push(new ShorthandParser());
+		const basicParsersResult = this.buildBasicParsers(basics);
+		if (basicParsersResult.isSuccess()) {
+			parsers.push(...basicParsersResult.value);
+		} else {
+			return new Failure(basicParsersResult.error);
 		}
 
 		const localedParserResult = this.buildLocaledParsers(locales);
@@ -21,6 +24,26 @@ export class ParserFactory {
 
 		return new Success(new MultipleParser(parsers));
 	}
+
+	static buildBasicParsers(types: string[]): Result<Parser[], Error> {
+		const unknownTypes: string[] = [];
+
+		const parsers = types.flatMap((type) => {
+			if (type === 'shorthand') {
+				return [new ShorthandParser()];
+			}
+
+			unknownTypes.push(type);
+
+			return [];
+		});
+
+		if (0 < unknownTypes.length) {
+			return new Failure(new Error(`unknown basic parser type received: ${types.join(', ')}`));
+		}
+
+		return new Success(parsers);
+	};
 
 	static buildLocaledParsers(locales: string[]): Result<LocaledParser[], Error> {
 		const parsers: LocaledParser[] = [];

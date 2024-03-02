@@ -16,45 +16,51 @@ describe('parse', () => {
 	const now = dayjs();
 	const today = dayjs(now.format("YYYY-MM-DD"));
 
+	it('is invalid basic parser type', () => {
+		const result = ParserFactory.build(["foo"], []);
+		expect(result.isFailure()).toBeTruthy();
+		result.isFailure() && expect(result.error.message).toMatch(/unknown basic parser type/);
+	});
+
 	it("is invalid locale", () => {
-		const result = ParserFactory.build(false, ["foo"]);
+		const result = ParserFactory.build([], ["foo"]);
 		expect(result.isFailure()).toBeTruthy();
 		result.isFailure() && expect(result.error.message).toMatch(/unknown locale/);
 	});
 
 	describe.each([
 		{
-			locales: ["en"],
+			args: [[], ["en"]],
 			text: "Today",
 			days: [today]
 		},
 		{
-			locales: ["en"],
+			args: [[], ["en"]],
 			text: "3 weeks later",
 			days: [today.add(3, "w")]
 		},
 		{
-			locales: ["ja"],
+			args: [[], ["ja"]],
 			text: "昨日",
 			days: [today.subtract(1, "d")]
 		},
 		{
-			locales: ["ja"],
+			args: [[], ["ja"]],
 			text: "明日",
 			days: [today.add(1, "d")]
 		},
 		{
-			locales: ["en", "ja"],
+			args: [[], ["en", "ja"]],
 			text: "昨日",
 			days: [today.subtract(1, "d")]
 		},
 		{
-			locales: ["en", "ja"],
+			args: [[], ["en", "ja"]],
 			text: "Tomorrow",
 			days: [today.add(1, "d")]
 		},
-	])("in locales %p, success parse '%s'", ({ locales, text, days }) => {
-		const buildResult = ParserFactory.build(false, locales);
+	])("in locales %p, success parse '%s'", ({ args, text, days }) => {
+		const buildResult = ParserFactory.build(args[0], args[1]);
 
 		if (buildResult.isFailure()) {
 			console.error(buildResult.error);
