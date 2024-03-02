@@ -160,14 +160,15 @@ class ThatDaySettingTab extends PluginSettingTab {
 						createSpan({ text: "specify that day by shorthand expression." }), createEl("br"),
 						createEl("br"),
 						createSpan({ text: "format: [direction][unit][number]" }), createEl("br"),
-						createSpan({ text: "directon := n (next) | p (previous), default=n" }), createEl("br"),
+						createSpan({ text: "directon := n (next) | l (later) | b (before) | p (previous) | a (after, ago) , default=n" }), createEl("br"),
 						createSpan({ text: "unit := d(day) | w(week) | m(month), default=d" }), createEl("br"),
 						createSpan({ text: "number := any fixed number, default=1" }), createEl("br"),
 						createEl("br"),
 						createSpan({ text: "example:" }), createEl("br"),
 						createSpan({ text: "n → next day" }), createEl("br"),
-						createSpan({ text: "pw3 → 3 weeks ago" }), createEl("br"),
-						createSpan({ text: "nm2 → 2 months later" }),
+						createSpan({ text: "4 → 4 days later" }), createEl("br"),
+						createSpan({ text: "3wb → 3 weeks before" }), createEl("br"),
+						createSpan({ text: "2ml → 2 months later" }),
 					);
 					return d;
 				})(),
