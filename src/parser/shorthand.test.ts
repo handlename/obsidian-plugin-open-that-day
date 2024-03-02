@@ -22,9 +22,21 @@ describe("ShorthandParser", () => {
 		["n", [today.add(1, "d")]],
 		["3n", [today.add(3, "d")]],
 
+		// l = day(s) later
+		["l", [today.add(1, "d")]],
+		["4l", [today.add(4, "d")]],
+
 		// p = previous day(s)
 		["p", [today.subtract(1, "d")]],
 		["4p", [today.subtract(4, "d")]],
+
+		// b = day(s) before
+		["b", [today.subtract(1, "d")]],
+		["2b", [today.subtract(2, "d")]],
+
+		// a = day(s) ago or after
+		["a", [today.add(1, "d"), today.subtract(1, "d")]],
+		["3a", [today.add(3, "d"), today.subtract(3, "d")]],
 
 		// d = day(s)
 		["2d", [today.add(2, "d")]],
