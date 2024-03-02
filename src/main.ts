@@ -29,11 +29,17 @@ const LOCALES = [
 	"zh",
 ] as const;
 
+const BASICS = [
+	'shorthand',
+] as const;
+
 interface ThatDaySettings {
+	basics: string[];
 	locales: string[];
 };
 
 const DEFAULT_SETTIGNS: Partial<ThatDaySettings> = {
+	basics: ["shorthand"],
 	locales: ["en"],
 };
 
@@ -74,7 +80,7 @@ class ThatDayModal extends SuggestModal<string> {
 	constructor(app: App, plugin: OpenThatDayPlugin) {
 		super(app);
 
-		const result = ParserFactory.build(false, plugin.settings.locales);
+		const result = ParserFactory.build(plugin.settings.basics, plugin.settings.locales);
 		if (result.isFailure()) {
 			throw new Error("failed to build Parser");
 		}
@@ -120,11 +126,16 @@ class ThatDayModal extends SuggestModal<string> {
 class ThatDaySettingTab extends PluginSettingTab {
 	readonly plugin: OpenThatDayPlugin;
 	readonly localeClassName = "locale";
+	enabledBasics = new Map<string, boolean>;
 	enabledLocales = new Map<string, boolean>;
 
 	constructor(app: App, plugin: OpenThatDayPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
+
+		BASICS.forEach((type) => {
+			this.enabledBasics.set(type, plugin.settings.basics.includes(type));
+		});
 
 		LOCALES.forEach((loc) => {
 			this.enabledLocales.set(loc, plugin.settings.locales.includes(loc));
@@ -137,13 +148,32 @@ class ThatDaySettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
+			.setName("Basic Parsers")
+			.setDesc("Toggle basic parsers");
+
+		[
+			"shorthand",
+		].forEach((type) => {
+			new Setting(containerEl)
+				.setName(type)
+				.addToggle((tc) => {
+					tc.setValue(
+						!!this.enabledBasics.get(type)
+					).onChange(async (value) => {
+						this.enabledBasics.set(type, value);
+						this.plugin.settings.basics = BASICS.filter((type) => !!this.enabledBasics.get(type));
+						await this.plugin.saveSettings();
+					});
+				});
+		});
+
+		new Setting(containerEl)
 			.setName('Locales')
 			.setDesc('Toggle localed parsers');
 
 		LOCALES.forEach((loc) => {
 			new Setting(containerEl)
 				.setName(loc)
-				.setClass(this.localeClassName)
 				.addToggle((tc) => {
 					tc.setValue(
 						!!this.enabledLocales.get(loc)
