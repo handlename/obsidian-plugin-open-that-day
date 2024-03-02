@@ -20,23 +20,26 @@ describe("ShorthandParser", () => {
 
 		// n = next day(s)
 		["n", [today.add(1, "d")]],
-		["n3", [today.add(3, "d")]],
+		["3n", [today.add(3, "d")]],
 
 		// p = previous day(s)
 		["p", [today.subtract(1, "d")]],
-		["p4", [today.subtract(4, "d")]],
+		["4p", [today.subtract(4, "d")]],
 
 		// d = day(s)
-		["nd2", [today.add(2, "d")]],
-		["pd4", [today.subtract(4, "d")]],
+		["2d", [today.add(2, "d")]],
+		["3dn", [today.add(3, "d")]],
+		["4dp", [today.subtract(4, "d")]],
 
 		// w = week(s)
-		["nw", [today.add(1, "w")]],
-		["pw3", [today.subtract(3, "w")]],
+		["w", [today.add(1, "w")]],
+		["1wn", [today.add(1, "w")]],
+		["3wp", [today.subtract(3, "w")]],
 
 		// m = month(s)
-		["nm", [today.add(1, "M")]],
-		["pm6", [today.subtract(6, "M")]],
+		["m", [today.add(1, "M")]],
+		["2mn", [today.add(2, "M")]],
+		["6mp", [today.subtract(6, "M")]],
 
 		// failed to parse
 		["foo", []],

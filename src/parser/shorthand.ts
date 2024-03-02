@@ -3,7 +3,7 @@ import { Parser } from "../parser";
 
 export class ShorthandParser extends Parser {
 	private static patternToday = new RegExp('^t$');
-	private static patternRelative = new RegExp('^(?<direction>[np])(?<unit>[dwm])?(?<num>[0-9]+)?$');
+	private static patternRelative = new RegExp('^(?<num>[0-9]+)?(?<unit>[dwm])?(?<direction>[np])?$');
 
 	private static manipulateTypeMap: { [key: string]: string } = {
 		d: 'd',
@@ -42,7 +42,7 @@ export class ShorthandParser extends Parser {
 			return [];
 		}
 
-		const direction = matched.groups['direction'];
+		const direction = matched.groups['direction'] || 'n';
 		const unit = (ShorthandParser.manipulateTypeMap[matched.groups['unit']] || 'd') as dayjs.ManipulateType;
 		const num = matched.groups['num'] ? parseInt(matched.groups['num']) : 1;
 
