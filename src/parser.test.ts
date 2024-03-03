@@ -1,4 +1,6 @@
 import dayjs, { Dayjs } from "dayjs";
+import { Success } from "./result";
+import { ParserFactory } from "./parser_factory";
 import { Parser } from "./parser";
 
 describe('parse', () => {
@@ -14,44 +16,58 @@ describe('parse', () => {
 	const now = dayjs();
 	const today = dayjs(now.format("YYYY-MM-DD"));
 
-	test("invalid locale", () => {
-		const parser = new Parser(["foo"]);
-		expect(parser.localedParsers.length).toBe(0);
+	it('is invalid basic parser type', () => {
+		const result = ParserFactory.build(["foo"], []);
+		expect(result.isFailure()).toBeTruthy();
+		result.isFailure() && expect(result.error.message).toMatch(/unknown basic parser type/);
+	});
+
+	it("is invalid locale", () => {
+		const result = ParserFactory.build([], ["foo"]);
+		expect(result.isFailure()).toBeTruthy();
+		result.isFailure() && expect(result.error.message).toMatch(/unknown locale/);
 	});
 
 	describe.each([
 		{
-			locales: ["en"],
+			args: [[], ["en"]],
 			text: "Today",
 			days: [today]
 		},
 		{
-			locales: ["en"],
+			args: [[], ["en"]],
 			text: "3 weeks later",
 			days: [today.add(3, "w")]
 		},
 		{
-			locales: ["ja"],
+			args: [[], ["ja"]],
 			text: "昨日",
 			days: [today.subtract(1, "d")]
 		},
 		{
-			locales: ["ja"],
+			args: [[], ["ja"]],
 			text: "明日",
 			days: [today.add(1, "d")]
 		},
 		{
-			locales: ["en", "ja"],
+			args: [[], ["en", "ja"]],
 			text: "昨日",
 			days: [today.subtract(1, "d")]
 		},
 		{
-			locales: ["en", "ja"],
+			args: [[], ["en", "ja"]],
 			text: "Tomorrow",
 			days: [today.add(1, "d")]
 		},
-	])("in locales %p, success parse '%s'", ({ locales, text, days }) => {
-		const parser = new Parser(locales);
+	])("in locales %p, success parse '%s'", ({ args, text, days }) => {
+		const buildResult = ParserFactory.build(args[0], args[1]);
+
+		if (buildResult.isFailure()) {
+			console.error(buildResult.error);
+		}
+		expect(buildResult.isSuccess()).toBeTruthy();
+
+		const parser = (buildResult as Success<Parser>).value;
 		const results = parser.parse(text);
 
 		it(`should returns ${days.length} result(s)`, () => {
