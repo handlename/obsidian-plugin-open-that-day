@@ -6,7 +6,7 @@ type Direction = (typeof Directions)[number];
 
 export class ShorthandParser extends Parser {
 	private static patternToday = new RegExp('^t$');
-	private static patternRelative = new RegExp('^(?<num>[0-9]+)?(?<unit>[dwm])?(?<direction>[ablnp])?$');
+	private static patternRelative = new RegExp('^(?<num>[-0-9]+)?(?<unit>[dwm])?(?<direction>[ablnp])?$');
 
 	parse(text: string): Dayjs[] {
 		const funcs = [
