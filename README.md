@@ -41,6 +41,7 @@ Shorthand Parser parses short keyword to fixed date.
         - `d` (day)
         - `w` (week)
         - `m` (month)
+        - `y` (year)
     - number: default=`1`
         - any fixed number
 - examples:
@@ -48,6 +49,7 @@ Shorthand Parser parses short keyword to fixed date.
     - `4` → `4 days later`
     - `3wb` → `3 weeks before`
     - `2ml` → `2 months later`
+    - `-1y` → `-1 year later` = `1 year before`
 
 ### Localed Parsers
 
