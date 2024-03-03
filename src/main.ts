@@ -161,14 +161,15 @@ class ThatDaySettingTab extends PluginSettingTab {
 						createEl("br"),
 						createSpan({ text: "format: [direction][unit][number]" }), createEl("br"),
 						createSpan({ text: "directon := n (next) | l (later) | b (before) | p (previous) | a (after, ago) , default=n" }), createEl("br"),
-						createSpan({ text: "unit := d(day) | w(week) | m(month), default=d" }), createEl("br"),
+						createSpan({ text: "unit := d(day) | w(week) | m(month) | y(year), default=d" }), createEl("br"),
 						createSpan({ text: "number := any fixed number, default=1" }), createEl("br"),
 						createEl("br"),
 						createSpan({ text: "example:" }), createEl("br"),
 						createSpan({ text: "n → next day" }), createEl("br"),
 						createSpan({ text: "4 → 4 days later" }), createEl("br"),
 						createSpan({ text: "3wb → 3 weeks before" }), createEl("br"),
-						createSpan({ text: "2ml → 2 months later" }),
+						createSpan({ text: "2ml → 2 months later" }), createEl("br"),
+						createSpan({ text: "-1y → -1 year later = 1 year before" }),
 					);
 					return d;
 				})(),
