@@ -13,21 +13,9 @@ import {
 import moment from 'moment';
 import { Parser } from './parser';
 import { ParserFactory } from './parser_factory';
+import { Locale, Locales } from './parser/localed';
 
 const PLUGIN_PREFIX = "open-that-day-";
-
-const LOCALES = [
-	"de",
-	"en",
-	"es",
-	"fr",
-	"ja",
-	"nl",
-	"pt",
-	"ru",
-	"uk",
-	"zh",
-] as const;
 
 const BASICS = [
 	'shorthand',
@@ -35,7 +23,7 @@ const BASICS = [
 
 interface ThatDaySettings {
 	basics: string[];
-	locales: string[];
+	locales: Locale[];
 };
 
 const DEFAULT_SETTIGNS: Partial<ThatDaySettings> = {
@@ -137,7 +125,7 @@ class ThatDaySettingTab extends PluginSettingTab {
 			this.enabledBasics.set(type, plugin.settings.basics.includes(type));
 		});
 
-		LOCALES.forEach((loc) => {
+		Locales.forEach((loc) => {
 			this.enabledLocales.set(loc, plugin.settings.locales.includes(loc));
 		});
 	}
@@ -193,7 +181,7 @@ class ThatDaySettingTab extends PluginSettingTab {
 			.setName('Locales')
 			.setDesc('Toggle localed parsers');
 
-		LOCALES.forEach((loc) => {
+		Locales.forEach((loc) => {
 			new Setting(containerEl)
 				.setName(loc)
 				.addToggle((tc) => {
@@ -201,7 +189,7 @@ class ThatDaySettingTab extends PluginSettingTab {
 						!!this.enabledLocales.get(loc)
 					).onChange(async (value) => {
 						this.enabledLocales.set(loc, value);
-						this.plugin.settings.locales = LOCALES.filter((loc) => !!this.enabledLocales.get(loc));
+						this.plugin.settings.locales = Locales.filter((loc) => !!this.enabledLocales.get(loc));
 						await this.plugin.saveSettings();
 					});
 				});

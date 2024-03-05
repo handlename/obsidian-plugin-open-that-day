@@ -1,11 +1,11 @@
 import { Result, Success, Failure } from "./result";
 import { Parser, } from "./parser";
 import { ShorthandParser } from "./parser/shorthand";
-import { LocaledParser } from "./parser/localed";
+import { LocaledParser, Locale } from "./parser/localed";
 import { MultipleParser } from "./parser/multiple";
 
 export class ParserFactory {
-	static build(basics: string[], locales: string[]): Result<Parser, Error> {
+	static build(basics: string[], locales: Locale[]): Result<Parser, Error> {
 		const parsers: Parser[] = [];
 
 		const basicParsersResult = this.buildBasicParsers(basics);
@@ -45,7 +45,7 @@ export class ParserFactory {
 		return new Success(parsers);
 	};
 
-	static buildLocaledParsers(locales: string[]): Result<LocaledParser[], Error> {
+	static buildLocaledParsers(locales: Locale[]): Result<LocaledParser[], Error> {
 		const parsers: LocaledParser[] = [];
 		let failure: Failure<Error> | undefined;
 
