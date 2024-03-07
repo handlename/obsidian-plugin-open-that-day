@@ -1,7 +1,7 @@
 import dayjs, { Dayjs } from "dayjs";
 import { Success } from "./result";
 import { Locale } from './parser/localed';
-import { ParserFactory } from "./parser_factory";
+import { ParserFactory, ParserSelection } from "./parser_factory";
 import { Parser } from "./parser";
 
 describe('parse', () => {
@@ -26,46 +26,44 @@ describe('parse', () => {
 	describe('parse patterns', () => {
 
 		const patterns: {
-			args: [string[], Locale[]],
+			args: ParserSelection[],
 			text: string,
 			days: dayjs.Dayjs[],
 		}[] = [
 				{
-					args: [[], ["en"]],
+					args: [{ category: "localed", name: "en" }],
 					text: "Today",
 					days: [today]
 				},
 				{
-					args: [[], ["en"]],
+					args: [{ category: "localed", name: "en" }],
 					text: "3 weeks later",
 					days: [today.add(3, "w")]
 				},
 				{
-					args: [[], ["ja"]],
+					args: [{ category: "localed", name: "ja" }],
 					text: "昨日",
 					days: [today.subtract(1, "d")]
 				},
 				{
-					args: [[], ["ja"]],
+					args: [{ category: "localed", name: "ja" }],
 					text: "明日",
 					days: [today.add(1, "d")]
 				},
 				{
-					args: [[], ["en", "ja"]],
+					args: [{ category: "localed", name: "en" }, { category: "localed", name: "ja" }],
 					text: "昨日",
 					days: [today.subtract(1, "d")]
 				},
 				{
-					args: [[], ["en", "ja"]],
+					args: [{ category: "localed", name: "en" }, { category: "localed", name: "ja" }],
 					text: "Tomorrow",
 					days: [today.add(1, "d")]
 				},
 			];
 
 		describe.each(patterns)("in locales %p, success parse '%s'", ({ args, text, days }) => {
-			const buildResult = ParserFactory.build(args[1].map((loc) => {
-				return { category: "localed", name: loc };
-			}));
+			const buildResult = ParserFactory.build(args);
 
 			if (buildResult.isFailure()) {
 				console.error(buildResult.error);
