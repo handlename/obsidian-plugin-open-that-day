@@ -18,9 +18,9 @@ describe('parse', () => {
 	const today = dayjs(now.format("YYYY-MM-DD"));
 
 	it('is invalid basic parser type', () => {
-		const result = ParserFactory.build(["foo"], []);
+		const result = ParserFactory.build([{ category: "basic", name: "foo" }]);
 		expect(result.isFailure()).toBeTruthy();
-		result.isFailure() && expect(result.error.message).toMatch(/unknown basic parser type/);
+		result.isFailure() && expect(result.error.message).toMatch(/not exists in catalog/);
 	});
 
 	describe('parse patterns', () => {
@@ -63,7 +63,9 @@ describe('parse', () => {
 			];
 
 		describe.each(patterns)("in locales %p, success parse '%s'", ({ args, text, days }) => {
-			const buildResult = ParserFactory.build(args[0], args[1]);
+			const buildResult = ParserFactory.build(args[1].map((loc) => {
+				return { category: "localed", name: loc };
+			}));
 
 			if (buildResult.isFailure()) {
 				console.error(buildResult.error);

@@ -55,3 +55,44 @@ export class LocaledParser extends Parser {
 		return `${this.constructor.name}{locale: ${this.locale}}`;
 	}
 }
+
+export class DeLocaledParser extends LocaledParser {
+	constructor() { super("de") }
+}
+
+export class EnLocaledParser extends LocaledParser {
+	constructor() { super("en") }
+}
+
+export class EsLocaledParser extends LocaledParser {
+	constructor() { super("es") }
+}
+
+export class FrLocaledParser extends LocaledParser {
+	constructor() { super("fr") }
+}
+
+export class JaLocaledParser extends LocaledParser {
+	constructor() { super("ja") }
+}
+
+export class NlLocaledParser extends LocaledParser {
+	constructor() { super("nl") }
+}
+
+export class PtLocaledParser extends LocaledParser {
+	constructor() { super("pt") }
+}
+
+export class RuLocaledParser extends LocaledParser {
+	constructor() { super("ru") }
+}
+
+export class UkLocaledParser extends LocaledParser {
+	constructor() { super("uk") }
+}
+
+export class ZhLocaledParser extends LocaledParser {
+	constructor() { super("zh") }
+}
+

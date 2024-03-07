@@ -5,6 +5,8 @@ const Directions = [-1, 1] as const;
 type Direction = (typeof Directions)[number];
 
 export class ShorthandParser extends Parser {
+	static description = "shorthand parser";
+
 	private static patternToday = new RegExp('^t$');
 	private static patternRelative = new RegExp('^(?<num>[-0-9]+)?(?<unit>[dwmy])?(?<direction>[ablnp])?$');
 
