@@ -15,6 +15,7 @@ import { Parser } from './parser';
 import { ParserFactory, ParserCategory, ParserSelection, ParserCatalog, ParserCategories } from './parser_factory';
 import { Locale, Locales } from './parser/localed';
 import { networkInterfaces } from 'os';
+import markdoc from '@markdoc/markdoc';
 
 const PLUGIN_PREFIX = "open-that-day-";
 
@@ -154,64 +155,38 @@ class ThatDaySettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		// TODO: generate settings using PareserCatalog
+		const CategoryUIs = new Map<ParserCategory, Setting>;
+		let currentCategory: ParserCategory | undefined = undefined;
 
-		new Setting(containerEl)
-			.setName("Basic Parsers")
-			.setDesc("Toggle basic parsers");
-
-		[
-			{
-				name: "shorthand",
-				desc: (() => {
-					const d = document.createDocumentFragment();
-					d.append(
-						createSpan({ text: "specify that day by shorthand expression." }), createEl("br"),
-						createEl("br"),
-						createSpan({ text: "format: [direction][unit][number]" }), createEl("br"),
-						createSpan({ text: "directon := n (next) | l (later) | b (before) | p (previous) | a (after, ago) , default=n" }), createEl("br"),
-						createSpan({ text: "unit := d(day) | w(week) | m(month) | y(year), default=d" }), createEl("br"),
-						createSpan({ text: "number := any fixed number, default=1" }), createEl("br"),
-						createEl("br"),
-						createSpan({ text: "example:" }), createEl("br"),
-						createSpan({ text: "n → next day" }), createEl("br"),
-						createSpan({ text: "4 → 4 days later" }), createEl("br"),
-						createSpan({ text: "3wb → 3 weeks before" }), createEl("br"),
-						createSpan({ text: "2ml → 2 months later" }), createEl("br"),
-						createSpan({ text: "-1y → -1 year later = 1 year before" }),
-					);
-					return d;
-				})(),
+		ParserCatalog.forEach((item) => {
+			if (currentCategory !== item.category) {
+				const ui = new Setting(containerEl).setName(item.category);
+				currentCategory = item.category;
 			}
-		].forEach((type) => {
-			new Setting(containerEl)
-				.setName(type.name)
-				.setDesc(type.desc)
+
+			const parserUI = new Setting(containerEl)
+				.setName(item.name)
+				.setDesc((() => {
+					const ast = markdoc.parse(item.class.description);
+					const content = markdoc.transform(ast);
+					const md = markdoc.renderers.html(content);
+
+					const div = document.createElement("div");
+					div.innerHTML = md;
+
+					const df = document.createDocumentFragment();
+					df.append(div);
+
+					return df;
+				})())
 				.addToggle((tc) => {
 					tc.setValue(
-						this.isEnabled("basic", type.name)
+						this.isEnabled(item.category, item.name)
 					).onChange(async (value) => {
-						await this.onChangeParserToggle("basic", type.name, value);
+						await this.onChangeParserToggle(item.category, item.name, value);
 					});
 				});
-		});
-
-		new Setting(containerEl)
-			.setName('Locales')
-			.setDesc('Toggle localed parsers');
-
-		Locales.forEach((loc) => {
-			new Setting(containerEl)
-				.setName(loc)
-				.addToggle((tc) => {
-					this.enabledParsers;
-					tc.setValue(
-						this.isEnabled("localed", loc)
-					).onChange(async (value) => {
-						await this.onChangeParserToggle("localed", loc, value);
-					});
-				});
-		});
+		})
 	}
 
 	async onChangeParserToggle(category: ParserCategory, name: string, value: boolean) {

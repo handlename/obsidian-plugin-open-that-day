@@ -5,7 +5,37 @@ const Directions = [-1, 1] as const;
 type Direction = (typeof Directions)[number];
 
 export class ShorthandParser extends Parser {
-	static description = "shorthand parser";
+	static description = `
+Parses shorthand expression, specifis related to current date.
+
+#### Format
+
+\`\`\`
+[direction][unit][number]
+\`\`\`
+
+- directon
+	- \`n\` (next) default
+	- \`l\` (later)
+	- \`b\` (before)
+	- \`p\` (previous)
+	- \`a\` (after, ago)
+- unit
+	- \`d\` (day) default
+	- \`w\` (week)
+	- \`m\` (month)
+	- \`y\` (year)
+- number
+	- any fixed number, default=1
+
+#### Examples
+
+- \`n\` → next day
+- \`4\` → 4 days later
+- \`3wb\` → 3 weeks before
+- \`2ml\` → 2 months later
+- \`-1y\` → -1 year later = 1 year before
+	`;
 
 	private static patternToday = new RegExp('^t$');
 	private static patternRelative = new RegExp('^(?<num>[-0-9]+)?(?<unit>[dwmy])?(?<direction>[ablnp])?$');

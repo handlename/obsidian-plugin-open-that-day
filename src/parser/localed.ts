@@ -57,42 +57,52 @@ export class LocaledParser extends Parser {
 }
 
 export class DeLocaledParser extends LocaledParser {
+	static description = "for German";
 	constructor() { super("de") }
 }
 
 export class EnLocaledParser extends LocaledParser {
+	static description = "for English";
 	constructor() { super("en") }
 }
 
 export class EsLocaledParser extends LocaledParser {
+	static description = "for Spanish";
 	constructor() { super("es") }
 }
 
 export class FrLocaledParser extends LocaledParser {
+	static description = "for French";
 	constructor() { super("fr") }
 }
 
 export class JaLocaledParser extends LocaledParser {
+	static description = "for Japanese";
 	constructor() { super("ja") }
 }
 
 export class NlLocaledParser extends LocaledParser {
+	static description = "for Dutch";
 	constructor() { super("nl") }
 }
 
 export class PtLocaledParser extends LocaledParser {
+	static description = "for Portuguese";
 	constructor() { super("pt") }
 }
 
 export class RuLocaledParser extends LocaledParser {
+	static description = "for Russian";
 	constructor() { super("ru") }
 }
 
 export class UkLocaledParser extends LocaledParser {
+	static description = "for British English";
 	constructor() { super("uk") }
 }
 
 export class ZhLocaledParser extends LocaledParser {
+	static description = "for Chinese";
 	constructor() { super("zh") }
 }
 
