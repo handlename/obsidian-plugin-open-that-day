@@ -1,4 +1,5 @@
 import dayjs, { Dayjs } from "dayjs";
+
 import { ShorthandParser } from "./shorthand"
 
 describe("ShorthandParser", () => {

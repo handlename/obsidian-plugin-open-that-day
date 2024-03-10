@@ -1,8 +1,8 @@
 import dayjs, { Dayjs } from "dayjs";
-import { Success } from "./result";
-import { Locale } from './parser/localed';
-import { ParserFactory, ParserName } from "./parser_factory";
+
 import { Parser } from "./parser";
+import { ParserFactory, ParserName } from "./parser_factory";
+import { Success } from "./result";
 
 describe('parse', () => {
 	beforeEach(() => {

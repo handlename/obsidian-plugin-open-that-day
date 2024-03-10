@@ -1,21 +1,24 @@
 import {
 	App,
 	Plugin,
-	SuggestModal,
-	Setting,
 	PluginSettingTab,
+	Setting,
+	SuggestModal,
 } from 'obsidian';
 
+import markdoc from '@markdoc/markdoc';
+import moment from 'moment';
 import {
-	createDailyNote, getDailyNoteSettings
+	createDailyNote,
+	getDailyNoteSettings,
 } from 'obsidian-daily-notes-interface';
 
-import moment from 'moment';
 import { Parser } from './parser';
-import { ParserFactory, ParserCatalog, ParserName } from './parser_factory';
-import { Locale, Locales } from './parser/localed';
-import { networkInterfaces } from 'os';
-import markdoc from '@markdoc/markdoc';
+import {
+	ParserCatalog,
+	ParserFactory,
+	ParserName,
+} from './parser_factory';
 
 const PLUGIN_PREFIX = "open-that-day-";
 
