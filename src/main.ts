@@ -12,7 +12,7 @@ import {
 
 import moment from 'moment';
 import { Parser } from './parser';
-import { ParserFactory, ParserCategory, ParserSelection, ParserCatalog, ParserCategories } from './parser_factory';
+import { ParserFactory, ParserCatalog, ParserName } from './parser_factory';
 import { Locale, Locales } from './parser/localed';
 import { networkInterfaces } from 'os';
 import markdoc from '@markdoc/markdoc';
@@ -20,22 +20,11 @@ import markdoc from '@markdoc/markdoc';
 const PLUGIN_PREFIX = "open-that-day-";
 
 type ThatDaySettings = {
-	parsers: ThatDayParserStting;
+	parsers: ParserName[];
 };
 
-type ThatDayParserStting = {
-	[category in ParserCategory]: string[];
-}
-
 const DEFAULT_SETTIGNS: Partial<ThatDaySettings> = {
-	parsers: {
-		basic: [
-			"shorthand",
-		],
-		localed: [
-			"en",
-		],
-	},
+	parsers: ["shorthand", "en"],
 };
 
 export default class OpenThatDayPlugin extends Plugin {
@@ -75,25 +64,12 @@ class ThatDayModal extends SuggestModal<string> {
 	constructor(app: App, plugin: OpenThatDayPlugin) {
 		super(app);
 
-		const selections = this.buildParserSelections(plugin.settings.parsers);
-		const result = ParserFactory.build(selections);
+		const result = ParserFactory.build(plugin.settings.parsers);
 		if (result.isFailure()) {
 			throw new Error("failed to build Parser");
 		}
 
 		this.parser = result.value;
-	}
-
-	buildParserSelections(setting: ThatDayParserStting): ParserSelection[] {
-		return ParserCategories.flatMap((category) => {
-			if (setting[category] === undefined) {
-				return [];
-			}
-
-			return setting[category].map((name) => {
-				return { category, name };
-			})
-		});
 	}
 
 	getSuggestions(query: string): string[] {
@@ -134,18 +110,14 @@ class ThatDayModal extends SuggestModal<string> {
 class ThatDaySettingTab extends PluginSettingTab {
 	readonly plugin: OpenThatDayPlugin;
 	readonly localeClassName = "locale";
-	enabledParsers = new Map<ParserCategory, Map<string, boolean>>;
+	enabledParsers = new Set<ParserName>;
 
 	constructor(app: App, plugin: OpenThatDayPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 
-		ParserCategories.forEach((category) => {
-			this.enabledParsers.set(category, new Map<string, boolean>);
-
-			plugin.settings.parsers[category].forEach((name) => {
-				this.enabledParsers.get(category)?.set(name, true);
-			})
+		plugin.settings.parsers.forEach((name) => {
+			this.setEnabled(name, true);
 		});
 		console.debug(this.enabledParsers);
 	}
@@ -155,16 +127,9 @@ class ThatDaySettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		const CategoryUIs = new Map<ParserCategory, Setting>;
-		let currentCategory: ParserCategory | undefined = undefined;
-
+		const keys = Object.keys(ParserCatalog);
 		ParserCatalog.forEach((item) => {
-			if (currentCategory !== item.category) {
-				const ui = new Setting(containerEl).setName(item.category);
-				currentCategory = item.category;
-			}
-
-			const parserUI = new Setting(containerEl)
+			new Setting(containerEl)
 				.setName(item.name)
 				.setDesc((() => {
 					const ast = markdoc.parse(item.class.description);
@@ -181,38 +146,30 @@ class ThatDaySettingTab extends PluginSettingTab {
 				})())
 				.addToggle((tc) => {
 					tc.setValue(
-						this.isEnabled(item.category, item.name)
+						this.isEnabled(item.name)
 					).onChange(async (value) => {
-						await this.onChangeParserToggle(item.category, item.name, value);
+						await this.onChangeParserToggle(item.name, value);
 					});
 				});
-		})
+		});
 	}
 
-	async onChangeParserToggle(category: ParserCategory, name: string, value: boolean) {
-		this.setEnabled(category, name, value);
+	async onChangeParserToggle(name: ParserName, value: boolean) {
+		this.setEnabled(name, value);
 
-		const newSetting: ThatDayParserStting = { basic: [], localed: [] };
-
-		ParserCatalog.forEach((item) => {
-			if (this.isEnabled(item.category, item.name)) {
-				newSetting[item.category].push(item.name);
-			}
-		})
-
-		this.plugin.settings.parsers = newSetting;
+		this.plugin.settings.parsers = [...this.enabledParsers];
 		await this.plugin.saveSettings();
 	}
 
-	isEnabled(category: ParserCategory, name: string): boolean {
-		return !!this.enabledParsers.get(category)?.get(name);
+	isEnabled(name: ParserName): boolean {
+		return this.enabledParsers.has(name);
 	}
 
-	setEnabled(category: ParserCategory, name: string, value: boolean) {
-		if (!this.enabledParsers.has(category)) {
-			this.enabledParsers.set(category, new Map<string, boolean>);
+	setEnabled(name: ParserName, value: boolean) {
+		if (value) {
+			this.enabledParsers.add(name);
+		} else {
+			this.enabledParsers.delete(name);
 		}
-
-		this.enabledParsers.get(category)?.set(name, value);
 	}
 };

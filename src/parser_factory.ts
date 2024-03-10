@@ -15,51 +15,33 @@ import {
 } from "./parser/localed";
 import { MultipleParser } from "./parser/multiple";
 
-export const ParserCategories = [
-	"basic",
-	"localed",
+export const ParserCatalog = [
+	{ name: "shorthand", class: ShorthandParser },
+
+	{ name: "de", class: DeLocaledParser },
+	{ name: "en", class: EnLocaledParser },
+	{ name: "es", class: EsLocaledParser },
+	{ name: "fr", class: FrLocaledParser },
+	{ name: "ja", class: JaLocaledParser },
+	{ name: "nl", class: NlLocaledParser },
+	{ name: "pt", class: PtLocaledParser },
+	{ name: "ru", class: RuLocaledParser },
+	{ name: "uk", class: UkLocaledParser },
+	{ name: "zh", class: ZhLocaledParser },
 ] as const;
 
-export type ParserCategory = (typeof ParserCategories)[number];
-
-type ParserCatalogItem = {
-	category: ParserCategory,
-	name: string,
-	class: typeof Parser,
-};
-
-export const ParserCatalog: ParserCatalogItem[] = [
-	{ category: "basic", name: "shorthand", class: ShorthandParser },
-
-	{ category: "localed", name: "de", class: DeLocaledParser },
-	{ category: "localed", name: "en", class: EnLocaledParser },
-	{ category: "localed", name: "es", class: EsLocaledParser },
-	{ category: "localed", name: "fr", class: FrLocaledParser },
-	{ category: "localed", name: "ja", class: JaLocaledParser },
-	{ category: "localed", name: "nl", class: NlLocaledParser },
-	{ category: "localed", name: "pt", class: PtLocaledParser },
-	{ category: "localed", name: "ru", class: RuLocaledParser },
-	{ category: "localed", name: "uk", class: UkLocaledParser },
-	{ category: "localed", name: "zh", class: ZhLocaledParser },
-];
-
-export type ParserSelection = {
-	category: string,
-	name: string,
-};
+export type ParserName = (typeof ParserCatalog)[number]["name"];
 
 export class ParserFactory {
-	static build(parserSelections: ParserSelection[]): Result<Parser, Error> {
+	static build(names: ParserName[]): Result<Parser, Error> {
 		const parsers: Parser[] = [];
 
 		try {
-			parserSelections.forEach((s) => {
-				const item = ParserCatalog.find((item) => {
-					return item.name === s.name;
-				});
+			names.forEach((name) => {
+				const item = ParserCatalog.find((item) => item.name === name);
 
 				if (item === undefined) {
-					throw new Error(`${s} is not exists in catalog`);
+					throw new Error(`invalid parser name: ${name}`);
 				}
 
 				parsers.push(new item.class());

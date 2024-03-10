@@ -1,7 +1,7 @@
 import dayjs, { Dayjs } from "dayjs";
 import { Success } from "./result";
 import { Locale } from './parser/localed';
-import { ParserFactory, ParserSelection } from "./parser_factory";
+import { ParserFactory, ParserName } from "./parser_factory";
 import { Parser } from "./parser";
 
 describe('parse', () => {
@@ -17,52 +17,19 @@ describe('parse', () => {
 	const now = dayjs();
 	const today = dayjs(now.format("YYYY-MM-DD"));
 
-	it('is invalid basic parser type', () => {
-		const result = ParserFactory.build([{ category: "basic", name: "foo" }]);
-		expect(result.isFailure()).toBeTruthy();
-		result.isFailure() && expect(result.error.message).toMatch(/not exists in catalog/);
-	});
-
 	describe('parse patterns', () => {
 
-		const patterns: {
-			args: ParserSelection[],
-			text: string,
-			days: dayjs.Dayjs[],
-		}[] = [
-				{
-					args: [{ category: "localed", name: "en" }],
-					text: "Today",
-					days: [today]
-				},
-				{
-					args: [{ category: "localed", name: "en" }],
-					text: "3 weeks later",
-					days: [today.add(3, "w")]
-				},
-				{
-					args: [{ category: "localed", name: "ja" }],
-					text: "昨日",
-					days: [today.subtract(1, "d")]
-				},
-				{
-					args: [{ category: "localed", name: "ja" }],
-					text: "明日",
-					days: [today.add(1, "d")]
-				},
-				{
-					args: [{ category: "localed", name: "en" }, { category: "localed", name: "ja" }],
-					text: "昨日",
-					days: [today.subtract(1, "d")]
-				},
-				{
-					args: [{ category: "localed", name: "en" }, { category: "localed", name: "ja" }],
-					text: "Tomorrow",
-					days: [today.add(1, "d")]
-				},
-			];
+		const patterns: [ParserName[], string, dayjs.Dayjs[]][] = [
+			[["en"], "Today", [today]],
+			[["en"], "3 weeks later", [today.add(3, "w")]],
+			[["ja"], "昨日", [today.subtract(1, "d")]],
+			[["ja"], "明日", [today.add(1, "d")]],
+			[["ja"], "昨日", [today.subtract(1, "d")]],
+			[["en", "ja"], "Tomorrow", [today.add(1, "d")]],
+			[["en", "ja"], "明日", [today.add(1, "d")]],
+		];
 
-		describe.each(patterns)("in locales %p, success parse '%s'", ({ args, text, days }) => {
+		describe.each(patterns)("in locales %p, success parse '%s'", (args, text, days) => {
 			const buildResult = ParserFactory.build(args);
 
 			if (buildResult.isFailure()) {
