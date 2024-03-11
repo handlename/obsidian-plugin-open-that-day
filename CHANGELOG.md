@@ -1,6 +1,11 @@
 # Changelog
 
 ## [v0.3.0](https://github.com/handlename/obsidian-plugin-open-that-day/compare/v0.2.1...v0.3.0) - 2024-03-11
+
+> [!WARNING]
+> This version has no data.json format compatibility with older versions.
+> Settings for enable/disable localed parser will be lost.
+
 - shorthand parser by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/7
 - Reorganize parsers by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/9
 
