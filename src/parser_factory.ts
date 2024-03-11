@@ -1,68 +1,55 @@
 import { Result, Success, Failure } from "./result";
 import { Parser, } from "./parser";
 import { ShorthandParser } from "./parser/shorthand";
-import { LocaledParser } from "./parser/localed";
+import {
+	DeLocaledParser,
+	EnLocaledParser,
+	EsLocaledParser,
+	FrLocaledParser,
+	JaLocaledParser,
+	NlLocaledParser,
+	PtLocaledParser,
+	RuLocaledParser,
+	UkLocaledParser,
+	ZhLocaledParser,
+} from "./parser/localed";
 import { MultipleParser } from "./parser/multiple";
 
+export const ParserCatalog = [
+	{ name: "shorthand", class: ShorthandParser },
+
+	{ name: "de", class: DeLocaledParser },
+	{ name: "en", class: EnLocaledParser },
+	{ name: "es", class: EsLocaledParser },
+	{ name: "fr", class: FrLocaledParser },
+	{ name: "ja", class: JaLocaledParser },
+	{ name: "nl", class: NlLocaledParser },
+	{ name: "pt", class: PtLocaledParser },
+	{ name: "ru", class: RuLocaledParser },
+	{ name: "uk", class: UkLocaledParser },
+	{ name: "zh", class: ZhLocaledParser },
+] as const;
+
+export type ParserName = (typeof ParserCatalog)[number]["name"];
+
 export class ParserFactory {
-	static build(basics: string[], locales: string[]): Result<Parser, Error> {
+	static build(names: ParserName[]): Result<Parser, Error> {
 		const parsers: Parser[] = [];
 
-		const basicParsersResult = this.buildBasicParsers(basics);
-		if (basicParsersResult.isSuccess()) {
-			parsers.push(...basicParsersResult.value);
-		} else {
-			return new Failure(basicParsersResult.error);
-		}
+		try {
+			names.forEach((name) => {
+				const item = ParserCatalog.find((item) => item.name === name);
 
-		const localedParserResult = this.buildLocaledParsers(locales);
-		if (localedParserResult.isSuccess()) {
-			parsers.push(...localedParserResult.value);
-		} else {
-			return new Failure(localedParserResult.error);
-		}
+				if (item === undefined) {
+					throw new Error(`invalid parser name: ${name}`);
+				}
+
+				parsers.push(new item.class());
+			});
+		} catch (e) {
+			return new Failure(e);
+		};
 
 		return new Success(new MultipleParser(parsers));
-	}
-
-	static buildBasicParsers(types: string[]): Result<Parser[], Error> {
-		const unknownTypes: string[] = [];
-
-		const parsers = types.flatMap((type) => {
-			if (type === 'shorthand') {
-				return [new ShorthandParser()];
-			}
-
-			unknownTypes.push(type);
-
-			return [];
-		});
-
-		if (0 < unknownTypes.length) {
-			return new Failure(new Error(`unknown basic parser type received: ${types.join(', ')}`));
-		}
-
-		return new Success(parsers);
-	};
-
-	static buildLocaledParsers(locales: string[]): Result<LocaledParser[], Error> {
-		const parsers: LocaledParser[] = [];
-		let failure: Failure<Error> | undefined;
-
-		locales.forEach((loc) => {
-			try {
-				const parser = new LocaledParser(loc);
-				parsers.push(parser);
-			} catch (e) {
-				failure = new Failure(e);
-				return;
-			}
-		});
-
-		if (failure !== undefined) {
-			return failure;
-		}
-
-		return new Success(parsers);
 	}
 }

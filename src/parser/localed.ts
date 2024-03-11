@@ -2,6 +2,21 @@ import * as chrono from "chrono-node";
 import dayjs, { Dayjs } from "dayjs";
 import { Parser } from "../parser";
 
+export const Locales = [
+	"de",
+	"en",
+	"es",
+	"fr",
+	"ja",
+	"nl",
+	"pt",
+	"ru",
+	"uk",
+	"zh",
+] as const;
+
+export type Locale = (typeof Locales)[number];
+
 export interface LocaledParserFn {
 	(text: string, ref?: chrono.ParsingReference | Date, option?: chrono.ParsingOption): chrono.ParsedResult[];
 }
@@ -10,7 +25,7 @@ export class LocaledParser extends Parser {
 	readonly locale: string;
 	readonly parserFn: LocaledParserFn;
 
-	constructor(locale: string) {
+	constructor(locale: Locale) {
 		super();
 
 		this.locale = locale;
@@ -26,8 +41,6 @@ export class LocaledParser extends Parser {
 			case "ru": this.parserFn = chrono.ru.parse; break;
 			case "uk": this.parserFn = chrono.uk.parse; break;
 			case "zh": this.parserFn = chrono.zh.parse; break;
-			default:
-				throw new Error(`unknown locale "${locale}"`);
 		}
 	};
 
@@ -42,3 +55,54 @@ export class LocaledParser extends Parser {
 		return `${this.constructor.name}{locale: ${this.locale}}`;
 	}
 }
+
+export class DeLocaledParser extends LocaledParser {
+	static description = "for German";
+	constructor() { super("de") }
+}
+
+export class EnLocaledParser extends LocaledParser {
+	static description = "for English";
+	constructor() { super("en") }
+}
+
+export class EsLocaledParser extends LocaledParser {
+	static description = "for Spanish";
+	constructor() { super("es") }
+}
+
+export class FrLocaledParser extends LocaledParser {
+	static description = "for French";
+	constructor() { super("fr") }
+}
+
+export class JaLocaledParser extends LocaledParser {
+	static description = "for Japanese";
+	constructor() { super("ja") }
+}
+
+export class NlLocaledParser extends LocaledParser {
+	static description = "for Dutch";
+	constructor() { super("nl") }
+}
+
+export class PtLocaledParser extends LocaledParser {
+	static description = "for Portuguese";
+	constructor() { super("pt") }
+}
+
+export class RuLocaledParser extends LocaledParser {
+	static description = "for Russian";
+	constructor() { super("ru") }
+}
+
+export class UkLocaledParser extends LocaledParser {
+	static description = "for British English";
+	constructor() { super("uk") }
+}
+
+export class ZhLocaledParser extends LocaledParser {
+	static description = "for Chinese";
+	constructor() { super("zh") }
+}
+

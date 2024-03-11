@@ -1,4 +1,5 @@
 import dayjs, { Dayjs } from "dayjs";
+
 import { ShorthandParser } from "./shorthand"
 
 describe("ShorthandParser", () => {
@@ -21,6 +22,7 @@ describe("ShorthandParser", () => {
 		// n = next day(s)
 		["n", [today.add(1, "d")]],
 		["3n", [today.add(3, "d")]],
+		["-2", [today.add(-2, "d")]],
 
 		// l = day(s) later
 		["l", [today.add(1, "d")]],
@@ -52,6 +54,9 @@ describe("ShorthandParser", () => {
 		["m", [today.add(1, "M")]],
 		["2mn", [today.add(2, "M")]],
 		["6mp", [today.subtract(6, "M")]],
+
+		// y = year(s)
+		["y", [today.add(1, "y")]],
 
 		// failed to parse
 		["foo", []],

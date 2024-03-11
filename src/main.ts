@@ -1,46 +1,33 @@
 import {
 	App,
 	Plugin,
-	SuggestModal,
-	Setting,
 	PluginSettingTab,
+	Setting,
+	SuggestModal,
 } from 'obsidian';
 
+import markdoc from '@markdoc/markdoc';
+import moment from 'moment';
 import {
-	createDailyNote, getDailyNoteSettings
+	createDailyNote,
+	getDailyNoteSettings,
 } from 'obsidian-daily-notes-interface';
 
-import moment from 'moment';
 import { Parser } from './parser';
-import { ParserFactory } from './parser_factory';
+import {
+	ParserCatalog,
+	ParserFactory,
+	ParserName,
+} from './parser_factory';
 
 const PLUGIN_PREFIX = "open-that-day-";
 
-const LOCALES = [
-	"de",
-	"en",
-	"es",
-	"fr",
-	"ja",
-	"nl",
-	"pt",
-	"ru",
-	"uk",
-	"zh",
-] as const;
-
-const BASICS = [
-	'shorthand',
-] as const;
-
-interface ThatDaySettings {
-	basics: string[];
-	locales: string[];
+type ThatDaySettings = {
+	parsers: ParserName[];
 };
 
 const DEFAULT_SETTIGNS: Partial<ThatDaySettings> = {
-	basics: ["shorthand"],
-	locales: ["en"],
+	parsers: ["shorthand", "en"],
 };
 
 export default class OpenThatDayPlugin extends Plugin {
@@ -80,7 +67,7 @@ class ThatDayModal extends SuggestModal<string> {
 	constructor(app: App, plugin: OpenThatDayPlugin) {
 		super(app);
 
-		const result = ParserFactory.build(plugin.settings.basics, plugin.settings.locales);
+		const result = ParserFactory.build(plugin.settings.parsers);
 		if (result.isFailure()) {
 			throw new Error("failed to build Parser");
 		}
@@ -126,20 +113,16 @@ class ThatDayModal extends SuggestModal<string> {
 class ThatDaySettingTab extends PluginSettingTab {
 	readonly plugin: OpenThatDayPlugin;
 	readonly localeClassName = "locale";
-	enabledBasics = new Map<string, boolean>;
-	enabledLocales = new Map<string, boolean>;
+	enabledParsers = new Set<ParserName>;
 
 	constructor(app: App, plugin: OpenThatDayPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 
-		BASICS.forEach((type) => {
-			this.enabledBasics.set(type, plugin.settings.basics.includes(type));
+		plugin.settings.parsers.forEach((name) => {
+			this.setEnabled(name, true);
 		});
-
-		LOCALES.forEach((loc) => {
-			this.enabledLocales.set(loc, plugin.settings.locales.includes(loc));
-		});
+		console.debug(this.enabledParsers);
 	}
 
 	display(): void {
@@ -147,64 +130,49 @@ class ThatDaySettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		new Setting(containerEl)
-			.setName("Basic Parsers")
-			.setDesc("Toggle basic parsers");
-
-		[
-			{
-				name: "shorthand",
-				desc: (() => {
-					const d = document.createDocumentFragment();
-					d.append(
-						createSpan({ text: "specify that day by shorthand expression." }), createEl("br"),
-						createEl("br"),
-						createSpan({ text: "format: [direction][unit][number]" }), createEl("br"),
-						createSpan({ text: "directon := n (next) | l (later) | b (before) | p (previous) | a (after, ago) , default=n" }), createEl("br"),
-						createSpan({ text: "unit := d(day) | w(week) | m(month) | y(year), default=d" }), createEl("br"),
-						createSpan({ text: "number := any fixed number, default=1" }), createEl("br"),
-						createEl("br"),
-						createSpan({ text: "example:" }), createEl("br"),
-						createSpan({ text: "n → next day" }), createEl("br"),
-						createSpan({ text: "4 → 4 days later" }), createEl("br"),
-						createSpan({ text: "3wb → 3 weeks before" }), createEl("br"),
-						createSpan({ text: "2ml → 2 months later" }), createEl("br"),
-						createSpan({ text: "-1y → -1 year later = 1 year before" }),
-					);
-					return d;
-				})(),
-			}
-		].forEach((type) => {
+		const keys = Object.keys(ParserCatalog);
+		ParserCatalog.forEach((item) => {
 			new Setting(containerEl)
-				.setName(type.name)
-				.setDesc(type.desc)
+				.setName(item.name)
+				.setDesc((() => {
+					const ast = markdoc.parse(item.class.description);
+					const content = markdoc.transform(ast);
+					const md = markdoc.renderers.html(content);
+
+					const div = document.createElement("div");
+					div.innerHTML = md;
+
+					const df = document.createDocumentFragment();
+					df.append(div);
+
+					return df;
+				})())
 				.addToggle((tc) => {
 					tc.setValue(
-						!!this.enabledBasics.get(type.name)
+						this.isEnabled(item.name)
 					).onChange(async (value) => {
-						this.enabledBasics.set(type.name, value);
-						this.plugin.settings.basics = BASICS.filter((type) => !!this.enabledBasics.get(type));
-						await this.plugin.saveSettings();
+						await this.onChangeParserToggle(item.name, value);
 					});
 				});
 		});
+	}
 
-		new Setting(containerEl)
-			.setName('Locales')
-			.setDesc('Toggle localed parsers');
+	async onChangeParserToggle(name: ParserName, value: boolean) {
+		this.setEnabled(name, value);
 
-		LOCALES.forEach((loc) => {
-			new Setting(containerEl)
-				.setName(loc)
-				.addToggle((tc) => {
-					tc.setValue(
-						!!this.enabledLocales.get(loc)
-					).onChange(async (value) => {
-						this.enabledLocales.set(loc, value);
-						this.plugin.settings.locales = LOCALES.filter((loc) => !!this.enabledLocales.get(loc));
-						await this.plugin.saveSettings();
-					});
-				});
-		});
+		this.plugin.settings.parsers = [...this.enabledParsers];
+		await this.plugin.saveSettings();
+	}
+
+	isEnabled(name: ParserName): boolean {
+		return this.enabledParsers.has(name);
+	}
+
+	setEnabled(name: ParserName, value: boolean) {
+		if (value) {
+			this.enabledParsers.add(name);
+		} else {
+			this.enabledParsers.delete(name);
+		}
 	}
 };

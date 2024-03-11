@@ -1,7 +1,8 @@
 import dayjs, { Dayjs } from "dayjs";
-import { Success } from "./result";
-import { ParserFactory } from "./parser_factory";
+
 import { Parser } from "./parser";
+import { ParserFactory, ParserName } from "./parser_factory";
+import { Success } from "./result";
 
 describe('parse', () => {
 	beforeEach(() => {
@@ -16,68 +17,38 @@ describe('parse', () => {
 	const now = dayjs();
 	const today = dayjs(now.format("YYYY-MM-DD"));
 
-	it('is invalid basic parser type', () => {
-		const result = ParserFactory.build(["foo"], []);
-		expect(result.isFailure()).toBeTruthy();
-		result.isFailure() && expect(result.error.message).toMatch(/unknown basic parser type/);
-	});
+	describe('parse patterns', () => {
 
-	it("is invalid locale", () => {
-		const result = ParserFactory.build([], ["foo"]);
-		expect(result.isFailure()).toBeTruthy();
-		result.isFailure() && expect(result.error.message).toMatch(/unknown locale/);
-	});
+		const patterns: [ParserName[], string, dayjs.Dayjs[]][] = [
+			[["en"], "Today", [today]],
+			[["en"], "3 weeks later", [today.add(3, "w")]],
+			[["ja"], "昨日", [today.subtract(1, "d")]],
+			[["ja"], "明日", [today.add(1, "d")]],
+			[["ja"], "昨日", [today.subtract(1, "d")]],
+			[["en", "ja"], "Tomorrow", [today.add(1, "d")]],
+			[["en", "ja"], "明日", [today.add(1, "d")]],
+		];
 
-	describe.each([
-		{
-			args: [[], ["en"]],
-			text: "Today",
-			days: [today]
-		},
-		{
-			args: [[], ["en"]],
-			text: "3 weeks later",
-			days: [today.add(3, "w")]
-		},
-		{
-			args: [[], ["ja"]],
-			text: "昨日",
-			days: [today.subtract(1, "d")]
-		},
-		{
-			args: [[], ["ja"]],
-			text: "明日",
-			days: [today.add(1, "d")]
-		},
-		{
-			args: [[], ["en", "ja"]],
-			text: "昨日",
-			days: [today.subtract(1, "d")]
-		},
-		{
-			args: [[], ["en", "ja"]],
-			text: "Tomorrow",
-			days: [today.add(1, "d")]
-		},
-	])("in locales %p, success parse '%s'", ({ args, text, days }) => {
-		const buildResult = ParserFactory.build(args[0], args[1]);
+		describe.each(patterns)("in locales %p, success parse '%s'", (args, text, days) => {
+			const buildResult = ParserFactory.build(args);
 
-		if (buildResult.isFailure()) {
-			console.error(buildResult.error);
-		}
-		expect(buildResult.isSuccess()).toBeTruthy();
+			if (buildResult.isFailure()) {
+				console.error(buildResult.error);
+			}
+			expect(buildResult.isSuccess()).toBeTruthy();
 
-		const parser = (buildResult as Success<Parser>).value;
-		const results = parser.parse(text);
+			const parser = (buildResult as Success<Parser>).value;
+			const results = parser.parse(text);
 
-		it(`should returns ${days.length} result(s)`, () => {
-			expect(results.length).toBe(1);
-		});
+			it(`should returns ${days.length} result(s)`, () => {
+				expect(results.length).toBe(1);
+			});
 
-		it.each(
-			results.map((r, i) => [r, days[i]])
-		)('result %s should be %s', (result: Dayjs, expected: Dayjs) => {
-			expect(result.format()).toBe(expected.format());
+			it.each(
+				results.map((r, i) => [r, days[i]])
+			)('result %s should be %s', (result: Dayjs, expected: Dayjs) => {
+				expect(result.format()).toBe(expected.format());
+			});
 		});
 	});
 });
