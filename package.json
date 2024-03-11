@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-plugin-open-that-day",
-	"version": "0.2.1",
+	"version": "0.3.0",
 	"description": "Open daily note by natural language",
 	"main": "main.js",
 	"scripts": {
