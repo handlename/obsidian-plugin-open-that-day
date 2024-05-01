@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.3.1](https://github.com/handlename/obsidian-plugin-open-that-day/compare/v0.3.1...0.3.1) - 2024-05-01
+- Fix release name for BRAT by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/19
+
 ## [v0.3.1](https://github.com/handlename/obsidian-plugin-open-that-day/compare/v0.3.0...v0.3.1) - 2024-05-01
 - update release workflow by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/10
 - chore(deps): bump actions/checkout from 3 to 4 by @dependabot in https://github.com/handlename/obsidian-plugin-open-that-day/pull/12
