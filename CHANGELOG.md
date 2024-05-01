@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.3.3](https://github.com/handlename/obsidian-plugin-open-that-day/compare/0.3.2...0.3.3) - 2024-05-01
+- Follow tag pattern changing by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/21
+
 ## [0.3.2](https://github.com/handlename/obsidian-plugin-open-that-day/compare/v0.3.1...0.3.2) - 2024-05-01
 - Fix release name for BRAT by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/19
 
