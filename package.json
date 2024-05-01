@@ -2,7 +2,11 @@
 	"name": "obsidian-plugin-open-that-day",
 	"version": "0.3.0",
 	"description": "Open daily note by natural language",
-	"main": "main.js",
+	"type": "module",
+	"engines": {
+		"node": ">=22"
+	},
+	"export": "./main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
