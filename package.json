@@ -34,5 +34,10 @@
 		"@markdoc/markdoc": "^0.4.0",
 		"chrono-node": "^2.7.5",
 		"obsidian-daily-notes-interface": "^0.9.4"
+	},
+	"overrides": {
+		"obsidian-daily-notes-interface": {
+			"obsidian": "latest"
+		}
 	}
 }
