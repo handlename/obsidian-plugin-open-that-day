@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.4](https://github.com/handlename/obsidian-plugin-open-that-day/compare/0.3.3...0.3.4) - 2024-08-17
+- chore(deps-dev): bump tslib from 2.4.0 to 2.6.3 by @dependabot in https://github.com/handlename/obsidian-plugin-open-that-day/pull/31
+- chore(deps-dev): bump ts-jest from 29.1.2 to 29.2.4 by @dependabot in https://github.com/handlename/obsidian-plugin-open-that-day/pull/37
+- chore(deps-dev): bump obsidian from 1.4.11 to 1.6.6 by @dependabot in https://github.com/handlename/obsidian-plugin-open-that-day/pull/34
+- chore(deps-dev): bump esbuild from 0.20.2 to 0.23.1 by @dependabot in https://github.com/handlename/obsidian-plugin-open-that-day/pull/38
+- chore(deps-dev): bump @types/node from 20.11.7 to 22.4.0 by @dependabot in https://github.com/handlename/obsidian-plugin-open-that-day/pull/39
+- braces v3.0.3 by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/40
+
 ## [0.3.3](https://github.com/handlename/obsidian-plugin-open-that-day/compare/0.3.3...0.3.3) - 2024-05-01
 - Follow tag pattern changing by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/21
 
