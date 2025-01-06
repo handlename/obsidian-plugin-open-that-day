@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.6](https://github.com/handlename/obsidian-plugin-open-that-day/compare/0.3.5...0.3.6) - 2025-01-06
+- Fix version in manifest.json by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/53
+- Fix release check trigger by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/55
+- Fix release check command by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/56
+
 ## [0.3.5](https://github.com/handlename/obsidian-plugin-open-that-day/compare/0.3.4...0.3.5) - 2025-01-06
 - chore(deps-dev): bump ts-jest from 29.2.4 to 29.2.5 by @dependabot in https://github.com/handlename/obsidian-plugin-open-that-day/pull/42
 - chore(deps-dev): bump dayjs from 1.11.11 to 1.11.13 by @dependabot in https://github.com/handlename/obsidian-plugin-open-that-day/pull/43
