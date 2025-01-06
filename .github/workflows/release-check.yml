@@ -3,9 +3,7 @@ name: release check
 on:
   push:
     branches:
-      - "!**"
-    tags:
-      - "tagpr"
+      - "tagpr-from-*"
 
 jobs:
   test:
