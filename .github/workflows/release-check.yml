@@ -1,7 +1,11 @@
-name: test
+name: release check
 
 on:
-  - push
+  push:
+    branches:
+      - "!**"
+    tags:
+      - "tagpr"
 
 jobs:
   test:
@@ -12,5 +16,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-      - run: npm ci
-      - run: npm test
+      - run: npm test-manifest
