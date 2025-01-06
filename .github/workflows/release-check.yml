@@ -6,7 +6,7 @@ on:
       - "tagpr-from-*"
 
 jobs:
-  test:
+  check:
     name: test
     runs-on: ubuntu-latest
     steps:
@@ -14,4 +14,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-      - run: npm test-manifest
+      - run: npm run test-manifest
