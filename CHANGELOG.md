@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.5](https://github.com/handlename/obsidian-plugin-open-that-day/compare/0.3.4...0.3.5) - 2025-01-06
+- chore(deps-dev): bump ts-jest from 29.2.4 to 29.2.5 by @dependabot in https://github.com/handlename/obsidian-plugin-open-that-day/pull/42
+- chore(deps-dev): bump dayjs from 1.11.11 to 1.11.13 by @dependabot in https://github.com/handlename/obsidian-plugin-open-that-day/pull/43
+- chore(deps): bump chrono-node from 2.7.5 to 2.7.7 by @dependabot in https://github.com/handlename/obsidian-plugin-open-that-day/pull/46
+- chore(deps-dev): bump @types/node from 22.4.0 to 22.10.5 by @dependabot in https://github.com/handlename/obsidian-plugin-open-that-day/pull/51
+- chore(deps-dev): bump tslib from 2.6.3 to 2.8.1 by @dependabot in https://github.com/handlename/obsidian-plugin-open-that-day/pull/49
+- Nodejs version v20.18.0 by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/52
+
 ## [0.3.4](https://github.com/handlename/obsidian-plugin-open-that-day/compare/0.3.3...0.3.4) - 2024-08-17
 - chore(deps-dev): bump tslib from 2.4.0 to 2.6.3 by @dependabot in https://github.com/handlename/obsidian-plugin-open-that-day/pull/31
 - chore(deps-dev): bump ts-jest from 29.1.2 to 29.2.4 by @dependabot in https://github.com/handlename/obsidian-plugin-open-that-day/pull/37
