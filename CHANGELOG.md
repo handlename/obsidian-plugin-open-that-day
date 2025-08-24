@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.7](https://github.com/handlename/obsidian-plugin-open-that-day/compare/0.3.6...0.3.7) - 2025-08-24
+- chore(deps): bump chrono-node from 2.7.7 to 2.7.9 by @dependabot[bot] in https://github.com/handlename/obsidian-plugin-open-that-day/pull/70
+- chore(deps-dev): bump builtin-modules from 4.0.0 to 5.0.0 by @dependabot[bot] in https://github.com/handlename/obsidian-plugin-open-that-day/pull/73
+
 ## [0.3.6](https://github.com/handlename/obsidian-plugin-open-that-day/compare/0.3.5...0.3.6) - 2025-01-06
 - Fix version in manifest.json by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/53
 - Fix release check trigger by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/55
