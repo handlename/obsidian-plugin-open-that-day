@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.0](https://github.com/handlename/obsidian-plugin-open-that-day/compare/0.3.6...0.4.0) - 2025-09-20
+- chore(deps): bump chrono-node from 2.7.7 to 2.7.9 by @dependabot[bot] in https://github.com/handlename/obsidian-plugin-open-that-day/pull/70
+- chore(deps-dev): bump builtin-modules from 4.0.0 to 5.0.0 by @dependabot[bot] in https://github.com/handlename/obsidian-plugin-open-that-day/pull/73
+- chore(deps): bump actions/checkout from 4 to 5 by @dependabot[bot] in https://github.com/handlename/obsidian-plugin-open-that-day/pull/90
+- chore(deps-dev): bump esbuild from 0.23.1 to 0.25.9 by @dependabot[bot] in https://github.com/handlename/obsidian-plugin-open-that-day/pull/92
+
 ## [0.3.6](https://github.com/handlename/obsidian-plugin-open-that-day/compare/0.3.5...0.3.6) - 2025-01-06
 - Fix version in manifest.json by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/53
 - Fix release check trigger by @handlename in https://github.com/handlename/obsidian-plugin-open-that-day/pull/55
