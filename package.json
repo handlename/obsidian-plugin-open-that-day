@@ -4,7 +4,7 @@
 	"description": "Open daily note by natural language",
 	"type": "module",
 	"engines": {
-		"node": ">=20.0.0 <21.0.0"
+		"node": ">=24.0.0 <25.0.0"
 	},
 	"export": "./main.js",
 	"scripts": {
@@ -19,7 +19,7 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@types/jest": "^29.5.12",
-		"@types/node": "^22.10.5",
+		"@types/node": "^24.6.1",
 		"@typescript-eslint/eslint-plugin": "5.29.0",
 		"@typescript-eslint/parser": "5.29.0",
 		"builtin-modules": "5.0.0",
